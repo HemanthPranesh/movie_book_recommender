@@ -4,7 +4,6 @@ from tmdb_api import get_popular_movies
 
 app = Flask(__name__)
 
-# fetch initial movies from TMDb
 movies = get_popular_movies(page=1)
 recommender = ContentRecommender(movies)
 
