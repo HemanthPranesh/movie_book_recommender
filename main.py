@@ -1,5 +1,4 @@
 from recommender import ContentRecommender
-
 if __name__ == "__main__":
     rec = ContentRecommender("data.csv")
     fav = input("Enter your favorite movie/book: ")
