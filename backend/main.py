@@ -1,12 +1,10 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from openai import OpenAI
-import os
-from dotenv import load_dotenv
+import requests
 from fastapi.middleware.cors import CORSMiddleware
-load_dotenv()
 
 app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -14,27 +12,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 class Query(BaseModel):
     user_input: str
-    category: str   
+    category: str
 
 @app.get("/")
 def read_root():
-    return {"message": "Movie Recommender API running"}
-
-import requests
-
-import requests
-
-import requests
+    return {"message": "Movie/Book Recommender API running with Llama3"}
 
 @app.post("/recommend")
 def recommend_movies(query: Query):
     try:
         user_input = query.user_input
-        category = query.category   # NEW
+        category = query.category
 
         if category == "movie":
             prompt = f"Recommend 5 movies for: {user_input}. Format: Movie - reason"
@@ -51,13 +42,9 @@ def recommend_movies(query: Query):
         )
 
         data = response.json()
-        result = data["response"]
+        result = data.get("response", "No response from model")
 
         return {"recommendations": result}
 
     except Exception as e:
         return {"recommendations": f"Error: {str(e)}"}
-
-    result = response.output[0].content[0].text
-
-    return {"recommendations": result}
